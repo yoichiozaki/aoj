@@ -24,7 +24,8 @@ func (u *UnionFind) root(x int) int { // ノードxの親を再帰で手繰る�
 	if u.parents[x] == x {
 		return x
 	}
-	return u.root(u.parents[x])
+	u.parents[x] = u.root(u.parents[x])
+	return u.parents[x]
 }
 func (u *UnionFind) unite(x, y int) { // ノードxとノードyの属する木が異なればそれらを統合する
 	rx := u.root(x)
