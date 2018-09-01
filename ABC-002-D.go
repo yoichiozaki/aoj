@@ -29,9 +29,9 @@ func main() {
 		e[x][y], e[y][x] = 1, 1
 	}
 	ans := 0
-	for bit := 1; bit < (1 << uint(n)); bit++ {
+	for bit := 1; bit < (1 << uint(n)); bit++ { // 2^n通り全て調べる
 		t := bitCount(bit)
-		if t <= ans {
+		if t <= ans { // 全部0はあり得ないし、最大のものを求めたい
 			continue
 		}
 		flag := true
