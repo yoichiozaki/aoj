@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -11,56 +10,53 @@ import (
 
 var scanner = bufio.NewScanner(os.Stdin)
 
-var N, M, res int
-var member []int
-var check []bool
-var G [][]int
-
-func dfs(v, c int) {
-	log.Println(member)
-	check[v] = true
-	c++
-	for _, e := range G[v] {
-		member[e]++
-	}
-	if c > res {
-		res = c
-	}
-
-	for _, next := range G[v] {
-		if check[next] == false && member[next] == c {
-			dfs(next, c)
-		}
-	}
-
-	for _, e := range G[v] {
-		member[e]--
-	}
-}
-
 func main() {
 	scanner.Scan()
 	buf := strings.Split(scanner.Text(), " ")
-
-	N, _ := strconv.Atoi(buf[0])
-	M, _ := strconv.Atoi(buf[1])
-
-	G = make([][]int, N+1)
-	for i := 0; i < M; i++ {
+	n, _ := strconv.Atoi(buf[0])
+	m, _ := strconv.Atoi(buf[1])
+	e := make([][]int, n)
+	for i := range e {
+		e[i] = make([]int, n)
+	}
+	for i := 0; i < m; i++ {
 		scanner.Scan()
 		buf_ := strings.Split(scanner.Text(), " ")
 		x, _ := strconv.Atoi(buf_[0])
 		y, _ := strconv.Atoi(buf_[1])
-		G[x] = append(G[x], y) // xとyは知り合い
-		G[y] = append(G[y], x) // yとxは知り合い
+		x--
+		y--
+		e[x][y], e[y][x] = 1, 1
 	}
-	log.Println(G)
-
-	for i := 1; i <= N; i++ {
-		member = make([]int, N+1)
-		check = make([]bool, N+1)
-		dfs(i, 0)
+	ans := 0
+	for bit := 1; bit < (1 << uint(n)); bit++ {
+		t := bitCount(bit)
+		if t <= ans {
+			continue
+		}
+		flag := true
+		for i := 0; i < n; i++ {
+			for j := 0; j < i; j++ {
+				if ((uint(bit)>>uint(i))&(uint(bit)>>uint(j))&1) != 0 &&
+					e[i][j] != 1 {
+					flag = false
+				}
+			}
+		}
+		if flag {
+			ans = t
+		}
 	}
+	fmt.Println(ans)
+}
 
-	fmt.Println(res)
+func bitCount(x int) int {
+	cnt := 0
+	strx := strings.Split(fmt.Sprintf("%012b", x), "")
+	for i := range strx {
+		if strx[i] == "1" {
+			cnt++
+		}
+	}
+	return cnt
 }
