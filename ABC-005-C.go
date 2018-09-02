@@ -26,6 +26,7 @@ func main() {
 	scanner.Scan()
 	m, _ := strconv.Atoi(scanner.Text())
 	guests := make([]int, m)
+	scanner.Scan()
 	buf_ := strings.Split(scanner.Text(), " ")
 	for i := range buf_ {
 		guests[i], _ = strconv.Atoi(buf_[i])
